@@ -3,19 +3,25 @@ set -e
 set -u
 
 pfconf=/etc/proftpd.conf
-uidbase=100000
-gidbase=200000
 
 getpfconf () {
   local name=$1
   sed -n -r -e "s/^$name\s+\"?(.*)\"?\s*\$/\1/p" -- "$pfconf"
 }
 
-pfusers=$(getpfconf AuthUserFile)
-pfgroups=$(getpfconf AuthGroupFile)
 data=$(getpfconf DefaultRoot)
 
+PGHOST=${PGHOST:-postgres}
+PGPORT=${PGPORT:-5432}
+PGDATABASE=${PGDATABASE:-postgres}
+PGUSER=${PGUSER:-postgres}
+PGPASSWORD=${PGPASSWORD:-postgres}
+
 prev=$(cat "$pfconf")
+cat >> "$pfconf" <<EOF
+SQLConnectInfo  ${PGDATABASE}@${PGHOST}:${PGPORT} ${PGUSER} ${PGPASSWORD}
+EOF
+
 for id in 0 1 2 ; do
   case "$id" in
   0)
@@ -23,38 +29,12 @@ for id in 0 1 2 ; do
     teamfolder=${data}
     teamfolderchroot=${teamfolder}
     teamallow="AllowAll"
-    teamdefchdir=''
     ;;
   *)
-    user=user${id}
     team=team${id}
     teamfolder=${data}/${team}
     teamfolderchroot=${teamfolder}
     teamallow="AllowGroup $team"
-    teamdefchdir="DefaultChdir $team $team"
-    let uid="$uidbase + $id"
-    let gid="$gidbase + $id"
-    gecos="User $id"
-
-    opts=(
-        --passwd
-        --file="$pfusers"
-        --name="$user"
-        --uid="$uid"
-        --gid="$uid"
-        --home="$data"
-        --shell=/usr/sbin/nologin
-        --stdin
-    )
-    ftpasswd "${opts[@]}" <<<"$user"
-    opts=(
-        --group
-        --file="$pfgroups"
-        --name="$team"
-        --gid="$gid"
-        --member="$user"
-    )
-    ftpasswd "${opts[@]}"
     ;;
   esac
 

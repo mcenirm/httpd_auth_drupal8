@@ -33,6 +33,8 @@ services:
     environment:
       POSTGRES_PASSWORD: example
     restart: always
+    volumes:
+      - ./setup_users.sql:/docker-entrypoint-initdb.d/setup_users.sql
 
   proftpd:
     build: proftpd
@@ -40,3 +42,9 @@ services:
       - "20:20"
       - "21:21"
       - "11110-11119:11110-11119"
+    environment:
+      PGHOST: postgres
+      PGPORT: 5432
+      PGDATABASE: postgres
+      PGUSER: postgres
+      PGPASSWORD: example
