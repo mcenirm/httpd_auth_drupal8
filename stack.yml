@@ -33,3 +33,10 @@ services:
     environment:
       POSTGRES_PASSWORD: example
     restart: always
+
+  proftpd:
+    build: proftpd
+    ports:
+      - "20:20"
+      - "21:21"
+      - "11110-11119:11110-11119"
