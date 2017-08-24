@@ -78,3 +78,5 @@ if ! proftpd -t ; then
   diff -u - <<<"$prev" "$pfconf" || :
   exit $rv
 fi
+
+exec /usr/sbin/proftpd --nodaemon
