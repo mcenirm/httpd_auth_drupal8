@@ -33,8 +33,6 @@ services:
     environment:
       POSTGRES_PASSWORD: example
     restart: always
-    volumes:
-      - ./setup_users.sql:/docker-entrypoint-initdb.d/setup_users.sql
 
   proftpd:
     build: proftpd
