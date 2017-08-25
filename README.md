@@ -1,3 +1,28 @@
+# Goal
+
+**Q**.: Will proftpd's mod_sql authenticate using Drupal 8 users?
+
+**A**.: Almost
+
+The [SQL queries](http://www.proftpd.org/docs/contrib/mod_sql.html#SQLNamedQuery) in [`proftpd.conf`](proftpd/proftpd.conf)) work fairly well with the `users_field_data` and `user__roles` tables from Drupal 8's *Standard* profile. The demonstrated approach to numeric `gid` values is unsafe. Of course, this whole effort is fragile since the database structure of Drupal 8's persistent PHP classes should not be exposed directly.
+
+However, proftpd does not support the [password hash scheme](https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Password%21PhpassHashedPassword.php/class/PhpassHashedPassword/8.3.x) used by Drupal 8. That is, the `$S$` markers are unrecognized by both `mod_sql`'s default [password types](http://www.proftpd.org/docs/contrib/mod_sql.html#SQLAuthTypes) and [`mod_sql_passwd`](http://www.proftpd.org/docs/contrib/mod_sql_passwd.html)'s expanded set.
+
+
+# Missing pieces
+
+Add support to `mod_sql_passwd`, or creating a new module, for the [portable PHP password hashing framework](http://www.openwall.com/phpass/), which seems to be the basis for Drupal 8's password hash.
+
+Identify an API within Drupal 8 that lets external services authenticate users, and implement a new proftpd module that uses that API and reasonably maps Drupal roles to the required group fields.
+
+
+# Alternative approaches
+
+Migrate account responsibilities to a dedicated service (eg, LDAP) and have both Drupal and proftpd authenticate against the same source.
+
+
+# Steps
+
 1. Launch things
     ```console
     docker-compose -f stack.yml up
