@@ -34,12 +34,10 @@ services:
       POSTGRES_PASSWORD: example
     restart: always
 
-  proftpd:
-    build: proftpd
+  httpd:
+    build: httpd
     ports:
-      - "20:20"
-      - "21:21"
-      - "11110-11119:11110-11119"
+      - "80:80"
     environment:
       PGHOST: postgres
       PGPORT: 5432
