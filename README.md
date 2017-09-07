@@ -1,6 +1,9 @@
+
+!!! Update readme to address _httpd_ instead of _proftpd_ !!!
+
 # Goal
 
-**Q**.: Will proftpd's mod_sql authenticate using Drupal 8 users?
+**Q**.: Will ~~proftpd~~'s mod_sql authenticate using Drupal 8 users?
 
 **A**.: Almost
 
