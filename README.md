@@ -28,7 +28,7 @@ Migrate account responsibilities to a dedicated service (eg, LDAP) and have both
 
 1. Launch things
     ```console
-    docker-compose -f stack.yml up
+    docker-compose up
     ```
 
 1. Install drupal
