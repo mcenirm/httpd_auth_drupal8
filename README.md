@@ -28,8 +28,10 @@ Migrate account responsibilities to a dedicated service (eg, LDAP) and have both
 
 1. Launch things
     ```console
-    docker-compose build httpd && docker-compose up httpd
+    docker-compose build httpd && docker-compose up postgres httpd
     ```
+
+1. Wait several seconds for postgres to sort out initialization.
 
 1. Verify access
     ```console
