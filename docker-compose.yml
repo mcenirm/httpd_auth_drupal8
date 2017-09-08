@@ -38,6 +38,8 @@ services:
 
   httpd:
     build: httpd
+    depends_on:
+      - postgres
     ports:
       - "80:8080"
     environment:
