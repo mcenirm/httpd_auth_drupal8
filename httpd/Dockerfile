@@ -1,12 +1,14 @@
-FROM centos:7
+FROM centos/httpd-24-centos7
 
-RUN yum -y makecache fast
-RUN yum -y install epel-release centos-release-scl
-RUN yum -y makecache fast
-RUN yum -y install httpd24 postgresql
+ENV PGHOST="postgres" \
+    PGPORT="5432" \
+    PGDATABASE="postgres" \
+    PGUSER="postgres" \
+    PGPASSWORD="postgres"
 
-COPY entrypoint /
+COPY test.conf ${HTTPD_MAIN_CONF_D_PATH}/
+COPY setup_teams ${HTTPD_APP_ROOT}/
 
-EXPOSE 80
-
-ENTRYPOINT [ "/entrypoint" ]
+USER 0
+RUN ${HTTPD_APP_ROOT}/setup_teams
+USER 1001

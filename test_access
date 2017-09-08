@@ -1,0 +1,44 @@
+#!/bin/bash
+set -e
+set -u
+
+base='http://localhost/data/'
+
+users=( '' user1 user2 )
+teams=( everyone team1 team2 )
+
+fail_count=0
+for u in "${users[@]}" ; do
+  cmd=( curl -s -o /dev/null -w '%{http_code}' )
+  if [ -n "$u" ] ; then
+    cmd+=( -u "$u:$u" )
+  fi
+  for t in "${teams[@]}" ; do
+    if [ "$t" = everyone ] ; then
+      exp=200
+    elif [ "${t#team}" = "${u#user}" ] ; then
+      exp=200
+    else
+      exp=401
+    fi
+
+    url=$base
+    if [ "$t" != everyone ] ; then
+      url+=$t/
+    fi
+    url+=readme.txt
+    code=$("${cmd[@]}" "$url") || :
+
+    if [ "$code" -ne "$exp" ] ; then
+      if [ "$fail_count" -eq 0 ] ; then
+        printf '## Expected Actual User URL\n'
+      fi
+      let ++fail_count
+      printf ..
+      printf ' %q' "$exp" "$code" "$u" "$url"
+      printf '\n'
+    fi
+  done
+done | column -t
+
+exit $fail_count

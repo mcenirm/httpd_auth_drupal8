@@ -28,8 +28,17 @@ Migrate account responsibilities to a dedicated service (eg, LDAP) and have both
 
 1. Launch things
     ```console
-    docker-compose up
+    docker-compose build httpd && docker-compose up httpd
     ```
+
+1. Verify access
+    ```console
+    ./test_access
+    ```
+
+Test results should be empty showing that all tests passed. If there are problems, then it will show the expected response code, actual response code, user, and URL attempted.
+
+# TODO involve these steps too
 
 1. Install drupal
     1. http://0.0.0.0:8080

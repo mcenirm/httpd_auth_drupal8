@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+set -u
+
+data=/data
+htp=$data/.htpasswd
+htg=$data/.htgroup
+
+mkdir -p "$data"
+touch "$htp" "$htg"
+
+for id in 0 1 2 ; do
+  case "$id" in
+  0)
+    team=everyone
+    teamfolder=${data}
+    teamrequire="all granted"
+    user=''
+    ;;
+  *)
+    team=team${id}
+    teamfolder=${data}/${team}
+    teamrequire="group $team"
+    user=user${team#team}
+    ;;
+  esac
+
+  mkdir -p -- "$teamfolder"
+  echo "$team can read this" > "$teamfolder"/readme.txt
+  echo "Require $teamrequire" > "$teamfolder"/.htaccess
+  if [ -n "$user" ] ; then
+    htpasswd -bB "$htp" "$user" "$user"
+    echo "$team: $user" >> "$htg"
+  fi
+done
