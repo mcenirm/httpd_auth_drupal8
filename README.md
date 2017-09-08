@@ -28,7 +28,7 @@ Migrate account responsibilities to a dedicated service (eg, LDAP) and have both
 
 1. Launch things
     ```console
-    docker-compose build httpd && docker-compose up
+    docker-compose build && docker-compose up
     ```
 
 1. Wait several seconds for postgres to sort out initialization.

@@ -15,7 +15,7 @@ version: '3.1'
 services:
 
   drupal:
-    image: drupal:8.2-apache
+    build: drupal
     depends_on:
       - postgres
     ports:
