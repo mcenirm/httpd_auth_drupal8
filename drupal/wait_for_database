@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+set -u
+
+if [ -n "${PGHOST:-}" ] ; then
+  dbhost=${PGHOST}
+  dbport=${PGPORT:-5432}
+# elif TODO mysql
+fi
+
+if [ -n "${dbhost:-}" ] ; then
+  tries=3
+  delay=1
+  until cat /dev/null > /dev/tcp/"$dbhost"/"$dbport" 2> /dev/null ; do
+    echo "wait #$tries sleeping $delay"
+    sleep "$delay"
+    let tries-- delay*=2
+    if [ "$tries" -lt 1 ] ; then
+      exit 1
+    fi
+  done
+fi

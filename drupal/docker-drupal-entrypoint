@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+set -u
+
+if [ $# -lt 1  ] || [ "${1#-}" != "$1" ] ; then
+  set -- apache2-foreground "$@"
+  for f in /docker-entrypoint-initdrupal.d/*; do
+    case "$f" in
+      *.sh)     echo "$0: running $f"; . "$f" ;;
+      *)        echo "$0: ignoring $f" ;;
+    esac
+    echo
+  done
+fi
+
+echo Running "$@"
+exec "$@"

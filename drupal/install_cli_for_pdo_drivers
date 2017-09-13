@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e
+set -u
+
+drivers=( $(php -r 'foreach (PDO::getAvailableDrivers() as $driver) { echo "$driver\n"; }') )
+packages=()
+
+for driver in "${drivers[@]}" ; do
+  case "$driver" in
+    sqlite) : ;;
+    mysql)  : ;;
+    pgsql) packages+=(postgresql-client) ;;
+    *) : ;;
+  esac
+done
+
+if [ "${#packages[@]}" -gt 0 ] ; then
+  apt-get update
+  apt-get install -y --no-install-recommends "${packages[@]}"
+  apt-get clean
+fi
